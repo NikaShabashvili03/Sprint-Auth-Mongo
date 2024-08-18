@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.models.AppUser;
-import com.example.demo.models.LoginDto;
-import com.example.demo.models.RegisterDto;
+import com.example.demo.models.SignIn;
+import com.example.demo.models.SignUp;
 import com.example.demo.repository.AppUserRepository;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import jakarta.validation.Valid;
@@ -54,7 +54,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/signin")
-    public ResponseEntity<Object> signin  (@Valid @RequestBody LoginDto loginDto, BindingResult result) {
+    public ResponseEntity<Object> signin  (@Valid @RequestBody SignIn signIn, BindingResult result) {
         // Validation
 
         if(result.hasErrors()){
@@ -73,12 +73,12 @@ public class AccountController {
         try{
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginDto.getUsername(),
-                            loginDto.getPassword()
+                            signIn.getUsername(),
+                            signIn.getPassword()
                     )
             );
 
-            AppUser appUser = appUserRepository.findByUsername(loginDto.getUsername());
+            AppUser appUser = appUserRepository.findByUsername(signIn.getUsername());
 
             String jwtToken = createJwtToken(appUser);
 
@@ -97,7 +97,7 @@ public class AccountController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup (@Valid @RequestBody RegisterDto registerDto, BindingResult result){
+    public ResponseEntity<Object> signup (@Valid @RequestBody SignUp signUp, BindingResult result){
         // Validation
 
         if(result.hasErrors()){
@@ -116,22 +116,22 @@ public class AccountController {
         var bCryptEncoder = new BCryptPasswordEncoder();
 
         AppUser appUser = new AppUser();
-        appUser.setFirstName(registerDto.getFirstName());
-        appUser.setLastName(registerDto.getLastName());
-        appUser.setUsername(registerDto.getUsername());
-        appUser.setEmail(registerDto.getEmail());
+        appUser.setFirstName(signUp.getFirstName());
+        appUser.setLastName(signUp.getLastName());
+        appUser.setUsername(signUp.getUsername());
+        appUser.setEmail(signUp.getEmail());
         appUser.setRole("client");
         appUser.setCreatedAt(new Date());
-        appUser.setPassword(bCryptEncoder.encode(registerDto.getPassword()));
+        appUser.setPassword(bCryptEncoder.encode(signUp.getPassword()));
 
         //  save user into database
         try {
-            var otherUser = appUserRepository.findByUsername(registerDto.getUsername());
+            var otherUser = appUserRepository.findByUsername(signUp.getUsername());
             if(otherUser != null){
                 return ResponseEntity.badRequest().body("Username already taken");
             }
 
-            otherUser = appUserRepository.findByEmail(registerDto.getEmail());
+            otherUser = appUserRepository.findByEmail(signUp.getEmail());
             if(otherUser != null){
                 return ResponseEntity.badRequest().body("Email already taken");
             }

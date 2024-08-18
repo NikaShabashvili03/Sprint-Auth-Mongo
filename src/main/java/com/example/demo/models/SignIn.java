@@ -2,13 +2,12 @@ package com.example.demo.models;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class LoginDto {
+public class SignIn {
     @NotEmpty
     private String username;
 
     @NotEmpty
     private String password;
-
 
     public String getUsername() {
         return username;

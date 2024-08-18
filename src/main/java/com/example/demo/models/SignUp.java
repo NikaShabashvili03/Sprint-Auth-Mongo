@@ -3,7 +3,7 @@ package com.example.demo.models;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public class RegisterDto {
+public class SignUp {
     @NotEmpty
     private String firstName;
 
@@ -22,7 +22,6 @@ public class RegisterDto {
     @NotEmpty
     @Size(min = 6, message = "Minimum Password length is 6 characters")
     private String password;
-
 
     public String getFirstName() {
         return firstName;
