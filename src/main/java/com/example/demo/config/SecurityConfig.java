@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 
-import com.example.demo.service.AppUserService;
+import com.example.demo.service.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/home/**").permitAll()
+                        .requestMatchers("/api/v1/posts/all").permitAll()
+                        .requestMatchers("/api/v1/posts/one/{id}").permitAll()
                         .requestMatchers("/api/v1/auth").permitAll()
                         .requestMatchers("/api/v1/auth/signin").permitAll()
                         .requestMatchers("/api/v1/auth/signup").permitAll()
@@ -53,9 +54,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AppUserService appUserService){
+    public AuthenticationManager authenticationManager(AccountService accountService){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(appUserService);
+        provider.setUserDetailsService(accountService);
         provider.setPasswordEncoder(new BCryptPasswordEncoder());
 
         return new ProviderManager(provider);

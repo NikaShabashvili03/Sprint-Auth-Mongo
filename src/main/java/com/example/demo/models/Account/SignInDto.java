@@ -1,20 +1,20 @@
-package com.example.demo.models;
+package com.example.demo.models.Account;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class SignIn {
+public class SignInDto {
     @NotEmpty
-    private String username;
+    private String email;
 
     @NotEmpty
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

@@ -1,40 +1,26 @@
-package com.example.demo.models;
+package com.example.demo.models.Account;
 
-
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "users")
-public class AppUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class SignUpDto {
+    @NotEmpty
     private String firstName;
+
+    @NotEmpty
     private String lastName;
 
-    @Column(unique = true)
-    private String username;
-
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String email;
 
     private String phone;
     private String address;
+
+    @NotEmpty
+    @Size(min = 6, message = "Minimum Password length is 6 characters")
     private String password;
-    private String role;
-    private Date createdAt;
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -50,14 +36,6 @@ public class AppUser {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -90,21 +68,5 @@ public class AppUser {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }
