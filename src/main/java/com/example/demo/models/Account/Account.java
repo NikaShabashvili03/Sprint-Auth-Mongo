@@ -33,7 +33,7 @@ public class Account {
 
     private String password;
 
-    private String role;
+    private String role = "CLIENT";
     private Date createdAt;
 
     public ObjectId getId() {

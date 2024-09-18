@@ -9,9 +9,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -41,6 +46,33 @@ public class AccountController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @GetMapping("/admin")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> admin(Authentication auth) {
+        var response = new HashMap<String, Object>();
+        response.put("Email", auth.getName());
+        response.put("Authorities", auth.getAuthorities());
+
+        var account = accountRepository.findByEmail(auth.getName());
+        response.put("User", account);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user")
+//    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Object> user(Authentication auth) {
+        var response = new HashMap<String, Object>();
+        response.put("Email", auth.getName());
+        response.put("Authorities", auth.getAuthorities());
+
+        var account = accountRepository.findByEmail(auth.getName());
+        response.put("User", account);
+
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<Object> profile(Authentication auth) {
         var response = new HashMap<String, Object>();
@@ -49,6 +81,10 @@ public class AccountController {
 
         var account = accountRepository.findByEmail(auth.getName());
         response.put("User", account);
+
+//        List<Account> account1 = accountRepository.findByRegex();
+//
+//        return ResponseEntity.ok(account1);
 
         return ResponseEntity.ok(response);
     }
@@ -75,7 +111,6 @@ public class AccountController {
         account.setFirstName(signUp.getFirstName());
         account.setLastName(signUp.getLastName());
         account.setEmail(signUp.getEmail());
-        account.setRole("client");
         account.setCreatedAt(new Date());
         account.setPassword(bCryptEncoder.encode(signUp.getPassword()));
 
@@ -144,7 +179,7 @@ public class AccountController {
             e.printStackTrace();
         }
 
-        return ResponseEntity.badRequest().body("Bad username or password");
+        return ResponseEntity.badRequest().body("Bad email or password");
     }
 
 
